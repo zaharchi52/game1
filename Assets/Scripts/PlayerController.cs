@@ -36,7 +36,10 @@ public class PlayerController : MonoBehaviour
             rb.freezeRotation = true; // блокируем вращение тела
         }
     }
-
+    void Start()
+    {
+        GetComponent<SpriteRenderer>().sortingOrder = 2;
+    }
     void Update()
     {
         // Считываем ввод с осей (по умолчанию в проекте оси "Horizontal" и "Vertical" настроены)

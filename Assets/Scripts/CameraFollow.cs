@@ -17,17 +17,14 @@ public class CameraFollow : MonoBehaviour
             offset = transform.position - target.position;
     }
 
+    private Vector3 velocity = Vector3.zero;
+
     void LateUpdate()
     {
         if (target == null) return;
 
-        // Новая позиция камеры (с учётом смещения)
         Vector3 desiredPosition = target.position + offset;
-
-        // Плавное движение (Lerp)
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
-
-        // Фиксируем положение камеры
+        Vector3 smoothedPosition = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, 0.15f);
         transform.position = new Vector3(smoothedPosition.x, smoothedPosition.y, transform.position.z);
     }
 }

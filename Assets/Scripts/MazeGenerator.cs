@@ -1,151 +1,122 @@
-using UnityEngine;
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-/// <summary>
-/// MazeGenerator — создаёт случайный лабиринт в 2D.
-/// Работает на основе алгоритма поиска в глубину (Depth-First Search, рекурсивный backtracker).
-/// </summary>
-public class MazeGenerator : MonoBehaviour
+public class MazeGeneratorCell
 {
-    [Header("Maze Settings")]
-    public int width = 15;              // ширина лабиринта (в клетках)
-    public int height = 15;             // высота лабиринта (в клетках)
-    public float cellSize = 1f;         // размер клетки (расстояние между стенами)
+    public int X;
+    public int Y;
 
-    [Header("Prefabs")]
-    public GameObject wallPrefab;       // префаб стены
-    public GameObject floorPrefab;      // префаб пола
+    public bool WallLeft = true;
+    public bool WallBottom = true;
 
-    [Header("Objects")]
-    public GameObject player;           // ссылка на игрока
-    public GameObject entrancePrefab;   // вход
-    public GameObject exitPrefab;       // выход
+    public bool Visited = false;
+    public int DistanceFromStart;
+}
 
-    // внутренние переменные
-    private int[,] maze;                // 0 = стена, 1 = путь
-    private Vector2Int startCell;       // точка старта (вход)
-    private Vector2Int endCell;         // точка выхода
+public class MazeGenerator
+{
+    public int Width = 23;
+    public int Height = 15;
 
-    void Start()
+    public MazeGeneratorCell[,] GenerateMaze()
     {
-        GenerateMaze();
-        InstantiateMaze();
-        PlacePlayer();
-    }
+        MazeGeneratorCell[,] maze = new MazeGeneratorCell[Width, Height];
 
-    // --- 1. Генерация структуры лабиринта ---
-    void GenerateMaze()
-    {
-        maze = new int[width, height];
-
-        // Заполняем всё стенами
-        for (int x = 0; x < width; x++)
-            for (int y = 0; y < height; y++)
-                maze[x, y] = 0;
-
-        // Начальная клетка
-        startCell = new Vector2Int(1, 1);
-
-        // Генерируем путь рекурсивно
-        Carve(startCell.x, startCell.y);
-
-        // Выход — противоположный угол
-        endCell = new Vector2Int(width - 2, height - 2);
-    }
-
-    // Алгоритм carve — рекурсивный проход с удалением стен
-    void Carve(int x, int y)
-    {
-        // Помечаем клетку как путь
-        maze[x, y] = 1;
-
-        // Случайный порядок направлений
-        List<Vector2Int> directions = new List<Vector2Int>()
+        for (int x = 0; x < maze.GetLength(0); x++)
         {
-            new Vector2Int(0, 1),
-            new Vector2Int(1, 0),
-            new Vector2Int(0, -1),
-            new Vector2Int(-1, 0)
-        };
-        Shuffle(directions);
-
-        foreach (var dir in directions)
-        {
-            int nx = x + dir.x * 2;
-            int ny = y + dir.y * 2;
-
-            if (IsInside(nx, ny) && maze[nx, ny] == 0)
+            for (int y = 0; y < maze.GetLength(1); y++)
             {
-                // Удаляем стену между текущей и следующей клеткой
-                maze[x + dir.x, y + dir.y] = 1;
-                Carve(nx, ny);
-            }
-        }
-    }
-
-    // Проверка, внутри ли мы массива
-    bool IsInside(int x, int y)
-    {
-        return x > 0 && y > 0 && x < width - 1 && y < height - 1;
-    }
-
-    // Перемешивание списка направлений
-    void Shuffle(List<Vector2Int> list)
-    {
-        for (int i = 0; i < list.Count; i++)
-        {
-            int r = Random.Range(i, list.Count);
-            Vector2Int temp = list[i];
-            list[i] = list[r];
-            list[r] = temp;
-        }
-    }
-
-    // --- 2. Создание объектов на сцене ---
-    void InstantiateMaze()
-    {
-        Transform mazeParent = new GameObject("Maze").transform;
-
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                Vector3 pos = new Vector3(x * cellSize, y * cellSize, 0);
-
-                if (maze[x, y] == 0)
-                {
-                    // Стена
-                    GameObject wall = Instantiate(wallPrefab, pos, Quaternion.identity, mazeParent);
-                    var sr = wall.GetComponent<SpriteRenderer>();
-                    if (sr) sr.sortingOrder = 1; // стена поверх пола
-                }
-                else
-                {
-                    // Пол
-                    GameObject floor = Instantiate(floorPrefab, pos, Quaternion.identity, mazeParent);
-                    var sr = floor.GetComponent<SpriteRenderer>();
-                    if (sr) sr.sortingOrder = 0; // пол ниже стен
-                }
+                maze[x, y] = new MazeGeneratorCell { X = x, Y = y };
             }
         }
 
-        // Добавляем вход и выход
-        Vector3 startPos = new Vector3(startCell.x * cellSize, startCell.y * cellSize, 0);
-        Vector3 endPos = new Vector3(endCell.x * cellSize, endCell.y * cellSize, 0);
+        for (int x = 0; x < maze.GetLength(0); x++)
+        {
+            maze[x, Height - 1].WallLeft = false;
+        }
 
-        if (entrancePrefab)
-            Instantiate(entrancePrefab, startPos, Quaternion.identity, mazeParent);
+        for (int y = 0; y < maze.GetLength(1); y++)
+        {
+            maze[Width - 1, y].WallBottom = false;
+        }
 
-        if (exitPrefab)
-            Instantiate(exitPrefab, endPos, Quaternion.identity, mazeParent);
+        RemoveWallsWithBacktracker(maze);
+
+        PlaceMazeExit(maze);
+
+        return maze;
     }
 
-    // --- 3. Размещаем игрока ---
-    void PlacePlayer()
+    private void RemoveWallsWithBacktracker(MazeGeneratorCell[,] maze)
     {
-        if (player)
+        MazeGeneratorCell current = maze[0, 0];
+        current.Visited = true;
+        current.DistanceFromStart = 0;
+
+        Stack<MazeGeneratorCell> stack = new Stack<MazeGeneratorCell>();
+        do
         {
-            player.transform.position = new Vector3(startCell.x * cellSize, startCell.y * cellSize, 0);
+            List<MazeGeneratorCell> unvisitedNeighbours = new List<MazeGeneratorCell>();
+
+            int x = current.X;
+            int y = current.Y;
+
+            if (x > 0 && !maze[x - 1, y].Visited) unvisitedNeighbours.Add(maze[x - 1, y]);
+            if (y > 0 && !maze[x, y - 1].Visited) unvisitedNeighbours.Add(maze[x, y - 1]);
+            if (x < Width - 2 && !maze[x + 1, y].Visited) unvisitedNeighbours.Add(maze[x + 1, y]);
+            if (y < Height - 2 && !maze[x, y + 1].Visited) unvisitedNeighbours.Add(maze[x, y + 1]);
+
+            if (unvisitedNeighbours.Count > 0)
+            {
+                MazeGeneratorCell chosen = unvisitedNeighbours[UnityEngine.Random.Range(0, unvisitedNeighbours.Count)];
+                RemoveWall(current, chosen);
+
+                chosen.Visited = true;
+                stack.Push(chosen);
+                current = chosen;
+                chosen.DistanceFromStart = stack.Count;
+            }
+            else
+            {
+                current = stack.Pop();
+            }
+        } while (stack.Count > 0);
+    }
+
+    private void RemoveWall(MazeGeneratorCell a, MazeGeneratorCell b)
+    {
+        if (a.X == b.X)
+        {
+            if (a.Y > b.Y) a.WallBottom = false;
+            else b.WallBottom = false;
         }
+        else
+        {
+            if (a.X > b.X) a.WallLeft = false;
+            else b.WallLeft = false;
+        }
+    }
+
+    private void PlaceMazeExit(MazeGeneratorCell[,] maze)
+    {
+        MazeGeneratorCell furthest = maze[0, 0];
+
+        for (int x = 0; x < maze.GetLength(0); x++)
+        {
+            if (maze[x, Height - 2].DistanceFromStart > furthest.DistanceFromStart) furthest = maze[x, Height - 2];
+            if (maze[x, 0].DistanceFromStart > furthest.DistanceFromStart) furthest = maze[x, 0];
+        }
+
+        for (int y = 0; y < maze.GetLength(1); y++)
+        {
+            if (maze[Width - 2, y].DistanceFromStart > furthest.DistanceFromStart) furthest = maze[Width - 2, y];
+            if (maze[0, y].DistanceFromStart > furthest.DistanceFromStart) furthest = maze[0, y];
+        }
+
+        if (furthest.X == 0) furthest.WallLeft = false;
+        else if (furthest.Y == 0) furthest.WallBottom = false;
+        else if (furthest.X == Width - 2) maze[furthest.X + 1, furthest.Y].WallLeft = false;
+        else if (furthest.Y == Height - 2) maze[furthest.X, furthest.Y + 1].WallBottom = false;
     }
 }

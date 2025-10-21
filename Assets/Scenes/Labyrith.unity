@@ -122,7 +122,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &339403225
+--- !u!1 &595059165
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -130,45 +130,41 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 339403227}
-  - component: {fileID: 339403226}
+  - component: {fileID: 595059167}
+  - component: {fileID: 595059166}
   m_Layer: 0
-  m_Name: MazeGenerator
+  m_Name: MazeSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &339403226
+--- !u!114 &595059166
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 339403225}
+  m_GameObject: {fileID: 595059165}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f1948598c5ff2f44844490fdef37f09, type: 3}
+  m_Script: {fileID: 11500000, guid: ef8a891fe9b730146a3e8bddd9c54e71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 15
-  height: 15
-  cellSize: 1
-  wallPrefab: {fileID: 3571674633999983789, guid: 3c7e28d483087964396b87be36d219c2, type: 3}
-  floorPrefab: {fileID: 7274036148315332320, guid: b41e0e5dbb5fc1345abde46308365d4d, type: 3}
-  player: {fileID: 1174164513}
-  entrancePrefab: {fileID: 0}
-  exitPrefab: {fileID: 0}
---- !u!4 &339403227
+  CellPrefab: {fileID: 2741328094823221060, guid: 2ec308a882baa0e4fbf9fee8c83c29ff, type: 3}
+  HighWallPrefab: {fileID: 8251424823127431662, guid: ee36cebde8f4254438d8beb1403d8cb7, type: 3}
+  cellSpacing: 1
+  originOffset: {x: 0, y: 0}
+--- !u!4 &595059167
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 339403225}
+  m_GameObject: {fileID: 595059165}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.09198571, y: 0.043281298, z: -9.979802}
+  m_LocalPosition: {x: 0.21011269, y: 0.5173476, z: -0.026027143}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -231,7 +227,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 3.7, y: 1.04}
-    newSize: {x: 0.16, y: 0.16}
+    newSize: {x: 26.65625, y: 40}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -286,7 +282,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 9b36be30c0607c54ca816ce5a35830c1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -304,15 +300,15 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 1809582927
+  m_SortingLayer: -2
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 113ea083348614243ba2a4b20e6d9964, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.16, y: 0.16}
+  m_Size: {x: 26.65625, y: 40}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -327,7 +323,7 @@ Transform:
   m_GameObject: {fileID: 1174164513}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 0.18, z: -0.05}
+  m_LocalPosition: {x: 0.53, y: 0.52, z: -0.05}
   m_LocalScale: {x: 0.13, y: 0.46, z: 0.13}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -506,4 +502,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 1771860073}
   - {fileID: 1174164517}
-  - {fileID: 339403227}
+  - {fileID: 595059167}
