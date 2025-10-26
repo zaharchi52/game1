@@ -6,10 +6,11 @@ using UnityEngine;
 /// </summary>
 public class CameraFollow : MonoBehaviour
 {
-    public Transform target;    // Игрок
-    public float smoothSpeed = 5f; // Скорость следования
+    public Transform target;
+    public float smoothSpeed = 5f;
 
-    private Vector3 offset;     // Смещение (если нужно)
+    private Vector3 offset;
+    private bool followEnabled = true;  // контролирует следование
 
     void Start()
     {
@@ -21,10 +22,17 @@ public class CameraFollow : MonoBehaviour
 
     void LateUpdate()
     {
-        if (target == null) return;
+        if (target == null || !followEnabled) return;
 
         Vector3 desiredPosition = target.position + offset;
         Vector3 smoothedPosition = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, 0.15f);
         transform.position = new Vector3(smoothedPosition.x, smoothedPosition.y, transform.position.z);
     }
+
+    // Метод для включения/отключения слежения
+    public void SetFollow(bool enable)
+    {
+        followEnabled = enable;
+    }
 }
+

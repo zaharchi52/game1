@@ -1,12 +1,13 @@
-using UnityEngine;
+п»їusing UnityEngine;
 
 public class MazeSpawner : MonoBehaviour
 {
-    public Cell CellPrefab;              // префаб Cell (с компонентом Cell.cs)
-    public GameObject HighWallPrefab;    // префаб визуальной высокой стены (без коллайдера)
+    public Cell CellPrefab;                // РџСЂРµС„Р°Р± РѕР±С‹С‡РЅРѕР№ СЏС‡РµР№РєРё
+    public GameObject HighWallSpritePrefab; // РџСЂРµС„Р°Р± СЃРїСЂР°Р№С‚Р° РІРµСЂС…РЅРµР№ СЃС‚РµРЅС‹ (Р±РµР· РєРѕР»Р»Р°Р№РґРµСЂР°)
+    public GameObject PuzzleRoomPrefab;    // РџСЂРµС„Р°Р± РєРѕРјРЅР°С‚С‹ СЃ Р·Р°РіР°РґРєРѕР№
 
-    public float cellSpacing = 1f;       // расстояние между центрами ячеек (1 = соседняя клетка в 1 unit)
-    public Vector2 originOffset = Vector2.zero; // сдвиг всей сетки в мир. (по желанию)
+    public float cellSpacing = 1f;         // Р Р°СЃСЃС‚РѕСЏРЅРёРµ РјРµР¶РґСѓ РєР»РµС‚РєР°РјРё
+    public Vector2 originOffset = Vector2.zero; // РЎРјРµС‰РµРЅРёРµ Р»Р°Р±РёСЂРёРЅС‚Р°
 
     private void Start()
     {
@@ -16,41 +17,80 @@ public class MazeSpawner : MonoBehaviour
         int width = maze.GetLength(0);
         int height = maze.GetLength(1);
 
-        // создаём родитель для порядка
         GameObject mazeRoot = new GameObject("MazeRoot");
 
+        // === 1пёЏвѓЈ Р“РµРЅРµСЂР°С†РёСЏ РѕР±С‹С‡РЅС‹С… РєР»РµС‚РѕРє ===
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
                 Vector2 worldPos = new Vector2(x * cellSpacing, y * cellSpacing) + originOffset;
-                // instantiate cell prefab
                 Cell c = Instantiate(CellPrefab, worldPos, Quaternion.identity, mazeRoot.transform);
+
+
                 c.name = $"Cell_{x}_{y}";
 
-                // включаем/выключаем физические стены (коллайдеры)
+                // Р¤РёР·РёС‡РµСЃРєРёРµ СЃС‚РµРЅС‹
                 if (c.WallLeft != null) c.WallLeft.SetActive(maze[x, y].WallLeft);
                 if (c.WallBottom != null) c.WallBottom.SetActive(maze[x, y].WallBottom);
 
-                // логика высокой стены: если над текущей клеткой (y+1) есть нижняя стена -> ставим HighWall на позицию (x, y+1)
-                bool placeHighWall = false;
-                if (y < height - 1)
-                {
-                    if (maze[x, y + 1].WallBottom) placeHighWall = true;
-                }
-                else
-                {
-                    // если это верхний ряд — можно сделать высокую стену по краю
-                    placeHighWall = true;
-                }
+                // Р’РёР·СѓР°Р»СЊРЅС‹Рµ РІРµСЂС…РЅРёРµ СЃС‚РµРЅС‹ (СЃРїСЂР°Р№С‚ Р±РµР· РєРѕР»Р»Р°Р№РґРµСЂР°)
+                bool placeHighWallSprite = false;
 
-                if (placeHighWall && HighWallPrefab != null)
+                if (y < height - 1 && maze[x, y + 1].WallBottom) placeHighWallSprite = true;
+                if (y == height - 1) placeHighWallSprite = true;
+
+                if (placeHighWallSprite && HighWallSpritePrefab != null)
                 {
-                    Vector2 highWallWorld = new Vector2(x * cellSpacing, (y + 1) * cellSpacing) + originOffset;
-                    // optional: offset by 0.0.. e.g. highWallWorld.y += 0.0f;
-                    Instantiate(HighWallPrefab, highWallWorld, Quaternion.identity, mazeRoot.transform);
+                    Vector2 spritePos = new Vector2(x * cellSpacing, (y + 1) * cellSpacing) + originOffset;
+                    GameObject highWallSprite = Instantiate(HighWallSpritePrefab, spritePos, Quaternion.identity, mazeRoot.transform);
+
+                    // РџРѕРґРіРѕРЅСЏРµРј СЃРїСЂР°Р№С‚ РїРѕРґ С€РёСЂРёРЅСѓ РєР»РµС‚РєРё
+                    highWallSprite.transform.localScale = new Vector3(cellSpacing, highWallSprite.transform.localScale.y, 1f);
+
+                    // РЎРґРІРёРі СЃРїСЂР°Р№С‚Р° РІРЅРёР·, С‡С‚РѕР±С‹ РїРµСЂРµРєСЂС‹РІР°С‚СЊ С„РёР·РёС‡РµСЃРєСѓСЋ СЃС‚РµРЅСѓ
+                    highWallSprite.transform.position += new Vector3(0f, -0.27f * cellSpacing, 0f);
                 }
             }
+        }
+
+        // === 2пёЏвѓЈ Р”РѕР±Р°РІР»СЏРµРј РєРѕРјРЅР°С‚Сѓ СЃ Р·Р°РіР°РґРєРѕР№ ===
+        if (PuzzleRoomPrefab != null)
+        {
+            int centerX = width / 2;
+            int centerY = height / 2;
+
+            Vector2 roomPos = new Vector2(centerX * cellSpacing, centerY * cellSpacing) + originOffset;
+            GameObject puzzleRoom = Instantiate(PuzzleRoomPrefab, roomPos, Quaternion.identity, mazeRoot.transform);
+            puzzleRoom.name = "PuzzleRoom_Center";
+
+            int roomRadius = 2;  // СЂР°РґРёСѓСЃ РєРѕРјРЅР°С‚С‹ (РІ РєР»РµС‚РєР°С…)
+
+            // РћС‡РёС‰Р°РµРј РІСЃРµ СЃС‚РµРЅС‹ РІ СЂР°РґРёСѓСЃРµ РєРѕРјРЅР°С‚С‹
+            for (int dx = -roomRadius; dx <= roomRadius; dx++)
+            {
+                for (int dy = -roomRadius; dy <= roomRadius; dy++)
+                {
+                    int cx = centerX + dx;
+                    int cy = centerY + dy;
+                    if (cx >= 0 && cx < width && cy >= 0 && cy < height)
+                    {
+                        maze[cx, cy].WallLeft = false;
+                        maze[cx, cy].WallBottom = false;
+                    }
+                }
+            }
+
+            // Р”РµР»Р°РµРј РїСЂРѕС…РѕРґС‹ СЃРѕ РІСЃРµС… СЃС‚РѕСЂРѕРЅ РєРѕРјРЅР°С‚С‹ (РІРµСЂС…, РЅРёР·, Р»РµРІРѕ, РїСЂР°РІРѕ)
+            int topY = centerY + roomRadius;
+            int bottomY = centerY - roomRadius;
+            int leftX = centerX - roomRadius;
+            int rightX = centerX + roomRadius;
+
+            if (topY < height) maze[centerX, topY].WallBottom = false;
+            if (bottomY >= 0) maze[centerX, bottomY].WallBottom = false;
+            if (leftX >= 0) maze[leftX, centerY].WallLeft = false;
+            if (rightX < width) maze[rightX, centerY].WallLeft = false;
         }
     }
 }

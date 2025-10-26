@@ -151,8 +151,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8a891fe9b730146a3e8bddd9c54e71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CellPrefab: {fileID: 2741328094823221060, guid: 2ec308a882baa0e4fbf9fee8c83c29ff, type: 3}
-  HighWallPrefab: {fileID: 8251424823127431662, guid: ee36cebde8f4254438d8beb1403d8cb7, type: 3}
+  CellPrefab: {fileID: 7283452433248695310, guid: b6e58b0c512dd9247a31bc7249c5450a, type: 3}
+  HighWallSpritePrefab: {fileID: 2203177019671056311, guid: 655e5c1934d05c544b7024ae7ab1bd8c, type: 3}
+  PuzzleRoomPrefab: {fileID: 8113615328528172663, guid: 215eaf14e005bf4498ad5b5dc77964ab, type: 3}
+  BaseWallMaterial: {fileID: 2100000, guid: f6b99f751322f2a4b88171e9d1400d09, type: 2}
+  TopWallMaterial: {fileID: 2100000, guid: 638346bffb7baf24ba6fed413cd57524, type: 2}
   cellSpacing: 1
   originOffset: {x: 0, y: 0}
 --- !u!4 &595059167
@@ -222,7 +225,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.00000011920929, y: -0.017221093}
+  m_Offset: {x: -0.00000011920929, y: -0.031502813}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -233,7 +236,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3.7, y: 1.0744421}
+  m_Size: {x: 3.7, y: 0.9740245}
   m_EdgeRadius: 0
 --- !u!50 &1174164515
 Rigidbody2D:
@@ -323,8 +326,8 @@ Transform:
   m_GameObject: {fileID: 1174164513}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.53, y: 0.52, z: -0.05}
-  m_LocalScale: {x: 0.13, y: 0.46, z: 0.13}
+  m_LocalPosition: {x: 0.5, y: 0.5, z: -0.05}
+  m_LocalScale: {x: 0.021047, y: 0.076544, z: 0.13}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -341,7 +344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92426b57478ab0748956d7c504962b8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 4
+  speed: 1
   interactRadius: 1
   controlsInverted: 0
 --- !u!1 &1771860070
@@ -357,6 +360,7 @@ GameObject:
   - component: {fileID: 1771860071}
   - component: {fileID: 1771860074}
   - component: {fileID: 1771860075}
+  - component: {fileID: 1771860076}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -407,7 +411,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 6
+  orthographic size: 0.6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -432,7 +436,7 @@ Transform:
   m_GameObject: {fileID: 1771860070}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0.5, y: 0.5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -496,6 +500,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1174164517}
   smoothSpeed: 5
+--- !u!114 &1771860076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1771860070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8dc8c21ad7bc54f9e4342bc49e5d53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 1771860072}
+  targetOrthographicSize: 0.28
+  zoomSpeed: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
