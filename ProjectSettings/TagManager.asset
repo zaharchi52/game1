@@ -38,6 +38,15 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: WallBase
+    uniqueID: 3391407347
+    locked: 0
+  - name: HighWalls
+    uniqueID: 1809582927
+    locked: 0
+  - name: WallsTop
+    uniqueID: 585611445
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

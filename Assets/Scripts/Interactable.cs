@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
-    [TextArea] public string promptText = "Нажми E чтобы взаимодействовать";
+    [TextArea] public string promptText = "пїЅпїЅпїЅпїЅпїЅ E пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
     public bool canInteract = true;
 
-    // Этот метод вызывается при нажатии E игроком
+    // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ E пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public virtual void Interact()
     {
         Debug.Log("Interact with " + name);
