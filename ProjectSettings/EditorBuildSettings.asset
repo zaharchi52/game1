@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Intro.unity
     guid: b97f501bac5b22f43bb04fec74ea0519
   - enabled: 1
-    path: Assets/Scenes/Labyrith.unity
+    path: Assets/Scenes/Labyrith(1).unity
     guid: 6636daad5a1eeeb48971fec21f3bc741
   - enabled: 1
     path: Assets/Scenes/Caves.unity
