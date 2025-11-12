@@ -10,7 +10,8 @@ public class AudioController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        audioSource.PlayOneShot(audioClip);
+        audioSource.clip = audioClip;
+        audioSource.Play();
     }
 
     // Update is called once per frame
