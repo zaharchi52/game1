@@ -49,7 +49,7 @@ public class MazeSpawner : MonoBehaviour
                     highWallSprite.transform.localScale = new Vector3(cellSpacing, highWallSprite.transform.localScale.y, 1f);
 
                     // Сдвиг спрайта вниз, чтобы перекрывать физическую стену
-                    highWallSprite.transform.position += new Vector3(0f, -0.27f * cellSpacing, 0f);
+                    highWallSprite.transform.position += new Vector3(0f, -0.355f * cellSpacing, 0f);
                 }
             }
         }
