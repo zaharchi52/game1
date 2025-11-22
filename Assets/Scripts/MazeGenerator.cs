@@ -17,8 +17,8 @@ public class MazeGeneratorCell
 public class MazeGenerator
 {
     [Header("Размер лабиринта")]
-    public int Width = 13;
-    public int Height = 13;
+    public int Width = 9;
+    public int Height = 9;
 
     [Header("Комната (загадка)")]
     public bool EnableRoom = true;                // включить/выключить создание комнаты

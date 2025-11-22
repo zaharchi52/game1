@@ -56,9 +56,9 @@ public class MazeSpawner : MonoBehaviour
                         if (sr != null)
                         {
                             if (hasLeftPassage && hasRightPassage)
-                                sr.sortingOrder = 4; // нижняя клетка имеет проходы слева и справа
+                                sr.sortingOrder = 3; // нижняя клетка имеет проходы слева и справа
                             else
-                                sr.sortingOrder = 2; // стандартный случай
+                                sr.sortingOrder = 1; // стандартный случай
                         }
                     }
                 }

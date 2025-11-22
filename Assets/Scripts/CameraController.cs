@@ -3,8 +3,8 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public Camera mainCamera;
-    public float targetOrthographicSize = 0.28f; // projection size для комнаты
-    public float zoomSpeed = 2f;                  // скорость зума
+    public float targetOrthographicSize = 0.45f; // projection size для комнаты
+    public float zoomSpeed = 5f;                  // скорость зума
 
     private Vector3 targetPosition;
     private bool isZooming = false;

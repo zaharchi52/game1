@@ -1105,7 +1105,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CellPrefab: {fileID: 5031862975712384558, guid: ab486fe0fb45dbc4bb9c5545291f0ba4, type: 3}
   HighWallSpritePrefab: {fileID: 4058940250162214051, guid: 655e5c1934d05c544b7024ae7ab1bd8c, type: 3}
-  PuzzleRoomPrefab: {fileID: 8113615328528172663, guid: 215eaf14e005bf4498ad5b5dc77964ab, type: 3}
+  PuzzleRoomPrefab: {fileID: 3365844411879540881, guid: b8693ae90479cc348808daa0e43f4744, type: 3}
   cellSpacing: 1
   originOffset: {x: 0, y: 0}
 --- !u!4 &595059167
@@ -2297,8 +2297,8 @@ Transform:
   m_GameObject: {fileID: 1174164513}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5293, y: 0.4569, z: -0.05}
-  m_LocalScale: {x: 0.051354535, y: 0.047569517, z: 0.3171991}
+  m_LocalPosition: {x: 0.5, y: 0.5, z: -0.05}
+  m_LocalScale: {x: 0.05, y: 0.047, z: 0.32}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -3615,7 +3615,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 0.6
+  orthographic size: 0.45
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -3717,8 +3717,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 1771860072}
-  targetOrthographicSize: 0.28
-  zoomSpeed: 2
+  targetOrthographicSize: 0.45
+  zoomSpeed: 5
 --- !u!82 &1771860077
 AudioSource:
   m_ObjectHideFlags: 0

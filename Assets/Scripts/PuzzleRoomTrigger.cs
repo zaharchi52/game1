@@ -22,7 +22,7 @@ public class PuzzleRoomTrigger : MonoBehaviour
             cam.transform.position = new Vector3(transform.position.x, transform.position.y, cam.transform.position.z);
 
             // Μενÿεμ projection size
-            if (cam.orthographic) cam.orthographicSize = 0.28f;
+            if (cam.orthographic) cam.orthographicSize = 0.45f;
         }
     }
 
