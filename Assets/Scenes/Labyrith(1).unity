@@ -1103,11 +1103,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8a891fe9b730146a3e8bddd9c54e71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CellPrefab: {fileID: 5031862975712384558, guid: ab486fe0fb45dbc4bb9c5545291f0ba4, type: 3}
-  HighWallSpritePrefab: {fileID: 4058940250162214051, guid: 655e5c1934d05c544b7024ae7ab1bd8c, type: 3}
+  CellPrefab: {fileID: 1316823274769574555, guid: 725f0c2426aa45848b5bb13b9e436b9b, type: 3}
+  HighWallSpritePrefab: {fileID: 5992481538656432181, guid: 73b5d8529fb09da448f67a14221815ef, type: 3}
+  SpritesPrefab: {fileID: 7563976536149541276, guid: fd54c81179554f446baac71420874322, type: 3}
   PuzzleRoomPrefab: {fileID: 3365844411879540881, guid: b8693ae90479cc348808daa0e43f4744, type: 3}
   cellSpacing: 1
   originOffset: {x: 0, y: 0}
+  spriteOffset: {x: 0.771, y: 0.453, z: 0}
 --- !u!4 &595059167
 Transform:
   m_ObjectHideFlags: 0

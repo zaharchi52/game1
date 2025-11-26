@@ -1,13 +1,16 @@
-﻿using UnityEngine;
+﻿// FULL UPDATED MazeSpawner.cs with SpritePrefab overlay and offset
+using UnityEngine;
 
 public class MazeSpawner : MonoBehaviour
 {
     public Cell CellPrefab;                 // Префаб обычной ячейки
-    public GameObject HighWallSpritePrefab; // Префаб спрайта верхней стены (без коллайдера)
-    public GameObject PuzzleRoomPrefab;     // Префаб комнаты с загадкой
+    public GameObject HighWallSpritePrefab; // Префаб верхней стены
+    public GameObject SpritesPrefab;        // Префаб спрайтов поверх физических стен
+    public GameObject PuzzleRoomPrefab;
 
     public float cellSpacing = 1f;
     public Vector2 originOffset = Vector2.zero;
+    public Vector3 spriteOffset = new Vector3(0.771f, 0.453f, 0f); // смещение спрайтового префаба
 
     private void Start()
     {
@@ -19,7 +22,7 @@ public class MazeSpawner : MonoBehaviour
 
         GameObject mazeRoot = new GameObject("MazeRoot");
 
-        // === 1️⃣ Генерация обычных клеток ===
+        // === 1️⃣ Генерация клеток ===
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -32,51 +35,80 @@ public class MazeSpawner : MonoBehaviour
                 if (c.WallLeft != null) c.WallLeft.SetActive(maze[x, y].WallLeft);
                 if (c.WallBottom != null) c.WallBottom.SetActive(maze[x, y].WallBottom);
 
-                // === HighWallPrefab с учётом нижней клетки ===
+                // === 2️⃣ SpritesPrefab поверх физических стен с offset ===
+                if (SpritesPrefab != null)
+                {
+                    Vector3 spritePos = worldPos + spriteOffset;
+                    GameObject spriteObj = Instantiate(SpritesPrefab, spritePos, Quaternion.identity, mazeRoot.transform);
+                    spriteObj.name = $"Sprite_{x}_{y}";
+
+                    Transform leftT = spriteObj.transform.Find("WallLeftSprite");
+                    Transform bottomT = spriteObj.transform.Find("WallBottomSprite");
+
+                    SpriteRenderer srLeft = leftT ? leftT.GetComponent<SpriteRenderer>() : null;
+                    SpriteRenderer srBottom = bottomT ? bottomT.GetComponent<SpriteRenderer>() : null;
+
+                    // LEFT WALL
+                    if (maze[x, y].WallLeft && srLeft != null) { srLeft.enabled = true; srLeft.sortingOrder = 3; }
+                    else if (srLeft != null) srLeft.enabled = false;
+
+                    // BOTTOM WALL
+                    if (maze[x, y].WallBottom && srBottom != null) { srBottom.enabled = true; srBottom.sortingOrder = 1; }
+                    else if (srBottom != null) srBottom.enabled = false;
+
+                    // === SortingOrder 3 если ниже есть два прохода ===
+                    if (y > 0)
+                    {
+                        bool leftPass = (x > 0) ? !maze[x - 1, y - 1].WallLeft : false;
+                        bool rightPass = (x < width - 1) ? !maze[x + 1, y - 1].WallLeft : false;
+
+                        if (leftPass && rightPass)
+                        {
+                            if (srLeft && srLeft.enabled) srLeft.sortingOrder = 3;
+                            if (srBottom && srBottom.enabled) srBottom.sortingOrder = 3;
+                        }
+                    }
+                }
+
+                // === 3️⃣ HighWallPrefab ===
                 if (HighWallSpritePrefab != null && y > 0)
                 {
-                    MazeGeneratorCell belowCell = maze[x, y - 1];
+                    bool placeHigh = false;
+                    if (maze[x, y].WallBottom) placeHigh = true;
+                    if (y == height - 1) placeHigh = true;
 
-                    bool hasLeftPassage = (x > 0) ? !maze[x - 1, y - 1].WallLeft : false;
-                    bool hasRightPassage = (x < width - 1) ? !maze[x + 1, y - 1].WallLeft : false;
-
-                    bool placeHighWallSprite = false;
-                    if (maze[x, y].WallBottom) placeHighWallSprite = true; // верхняя клетка имеет нижнюю стену
-                    if (y == height - 1) placeHighWallSprite = true;       // край лабиринта
-
-                    if (placeHighWallSprite)
+                    if (placeHigh)
                     {
                         Vector3 spritePos = new Vector3(x * cellSpacing, y * cellSpacing, 0f) + (Vector3)originOffset;
-                        GameObject highWallSprite = Instantiate(HighWallSpritePrefab, spritePos, Quaternion.identity, mazeRoot.transform);
+                        GameObject high = Instantiate(HighWallSpritePrefab, spritePos, Quaternion.identity, mazeRoot.transform);
 
-                        highWallSprite.transform.localScale = new Vector3(cellSpacing, highWallSprite.transform.localScale.y, 1f);
-                        highWallSprite.transform.position += new Vector3(0f, -0.355f * cellSpacing, 0f);
+                        high.transform.localScale = new Vector3(cellSpacing, high.transform.localScale.y, 1f);
+                        high.transform.position += new Vector3(0f, -0.357f * cellSpacing, 0f);
 
-                        SpriteRenderer sr = highWallSprite.GetComponent<SpriteRenderer>();
-                        if (sr != null)
+                        SpriteRenderer hs = high.GetComponent<SpriteRenderer>();
+                        if (hs != null)
                         {
-                            if (hasLeftPassage && hasRightPassage)
-                                sr.sortingOrder = 3; // нижняя клетка имеет проходы слева и справа
-                            else
-                                sr.sortingOrder = 1; // стандартный случай
+                            bool leftPass = (x > 0) ? !maze[x - 1, y - 1].WallLeft : false;
+                            bool rightPass = (x < width - 1) ? !maze[x + 1, y - 1].WallLeft : false;
+
+                            if (leftPass && rightPass) hs.sortingOrder = 4;
+                            else hs.sortingOrder = 2;
                         }
                     }
                 }
             }
         }
 
-        // === 2️⃣ Комната с загадкой ===
+        // === 4️⃣ Комната с загадкой ===
         if (PuzzleRoomPrefab != null)
         {
             int centerX = width / 2;
             int centerY = height / 2;
-
             Vector2 roomPos = new Vector2(centerX * cellSpacing, centerY * cellSpacing) + originOffset;
             GameObject puzzleRoom = Instantiate(PuzzleRoomPrefab, roomPos, Quaternion.identity, mazeRoot.transform);
             puzzleRoom.name = "PuzzleRoom_Center";
 
             int roomRadius = 2;
-
             for (int dx = -roomRadius; dx <= roomRadius; dx++)
             {
                 for (int dy = -roomRadius; dy <= roomRadius; dy++)
