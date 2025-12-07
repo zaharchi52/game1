@@ -8,7 +8,7 @@ public class MazeSpawner : MonoBehaviour
     public GameObject SpritesPrefab;        // Префаб спрайтов поверх физических стен
     public GameObject PuzzleRoomPrefab;
 
-    public float cellSpacing = 1f;
+    public float cellSpacing = 1.7f;
     public Vector2 originOffset = Vector2.zero;
     public Vector3 spriteOffset = new Vector3(0.771f, 0.453f, 0f); // смещение спрайтового префаба
 
@@ -43,19 +43,26 @@ public class MazeSpawner : MonoBehaviour
                     spriteObj.name = $"Sprite_{x}_{y}";
 
                     Transform leftT = spriteObj.transform.Find("WallLeftSprite");
+                    Transform leftT1 = spriteObj.transform.Find("WallLeftSprite (1)");
                     Transform bottomT = spriteObj.transform.Find("WallBottomSprite");
+                    Transform bottomT1 = spriteObj.transform.Find("WallBottomSprite (1)");
 
                     SpriteRenderer srLeft = leftT ? leftT.GetComponent<SpriteRenderer>() : null;
+                    SpriteRenderer srLeft1 = leftT1 ? leftT1.GetComponent<SpriteRenderer>() : null;
                     SpriteRenderer srBottom = bottomT ? bottomT.GetComponent<SpriteRenderer>() : null;
+                    SpriteRenderer srBottom1 = bottomT1 ? bottomT1.GetComponent<SpriteRenderer>() : null;
 
                     // LEFT WALL
                     if (maze[x, y].WallLeft && srLeft != null) { srLeft.enabled = true; srLeft.sortingOrder = 3; }
                     else if (srLeft != null) srLeft.enabled = false;
+                    if (maze[x, y].WallLeft && srLeft1 != null) { srLeft1.enabled = true; srLeft1.sortingOrder = 3; }
+                    else if (srLeft1 != null) srLeft1.enabled = false;
 
                     // BOTTOM WALL
                     if (maze[x, y].WallBottom && srBottom != null) { srBottom.enabled = true; srBottom.sortingOrder = 1; }
                     else if (srBottom != null) srBottom.enabled = false;
-
+                    if (maze[x, y].WallBottom && srBottom1 != null) { srBottom1.enabled = true; srBottom1.sortingOrder = 1; }
+                    else if (srBottom1 != null) srBottom1.enabled = false;
                     // === SortingOrder 3 если ниже есть два прохода ===
                     if (y > 0)
                     {
@@ -66,6 +73,9 @@ public class MazeSpawner : MonoBehaviour
                         {
                             if (srLeft && srLeft.enabled) srLeft.sortingOrder = 3;
                             if (srBottom && srBottom.enabled) srBottom.sortingOrder = 3;
+                            if (srLeft1 && srLeft1.enabled) srLeft1.sortingOrder = 3;
+                            if (srBottom1 && srBottom1.enabled) srBottom1.sortingOrder = 3;
+
                         }
                     }
                 }

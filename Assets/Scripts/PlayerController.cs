@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
     }
     void Start()
     {
-        GetComponent<SpriteRenderer>().sortingOrder = 2;
+        GetComponent<SpriteRenderer>().sortingOrder = 0;
     }
     void Update()
     {
