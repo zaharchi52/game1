@@ -1004,7 +1004,7 @@ MonoBehaviour:
   CellPrefab: {fileID: 1316823274769574555, guid: 725f0c2426aa45848b5bb13b9e436b9b, type: 3}
   HighWallSpritePrefab: {fileID: 3616434394641638752, guid: fbf11fc9317f57945b2ec49c70f1a6a1, type: 3}
   SpritesPrefab: {fileID: 364368670287445326, guid: 8fb43106004d3234ab40d7ebc0550039, type: 3}
-  PuzzleRoomPrefab: {fileID: 6416580094808167277, guid: d0985268ebd0b0441b77a1cbdf6f029a, type: 3}
+  PuzzleRoomPrefab: {fileID: 3704027964797360985, guid: dcbb1a1211fb6a64b90cde493614e5fb, type: 3}
   cellSpacing: 1
   originOffset: {x: 0, y: 0}
   spriteOffset: {x: 0.771, y: 0.453, z: 0}
