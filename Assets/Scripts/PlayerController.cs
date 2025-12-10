@@ -20,7 +20,13 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Если true — управление инвертировано (используется для галлюцинаций в малинке).")]
     public bool controlsInverted = false;
 
-    // приватные поля
+    [SerializeField] Animator animator;
+    [SerializeField] FootstepPlayer _footsteps;
+
+    static readonly int DirectionXHash = Animator.StringToHash("DirectionX");
+    static readonly int DirectionYHash = Animator.StringToHash("DirectionY");
+    static readonly int SpeedHash = Animator.StringToHash("Speed");
+
     Rigidbody2D rb;           // кешируем Rigidbody2D для физики
     Vector2 moveVelocity;     // целевая скорость движения
 
@@ -59,6 +65,22 @@ public class PlayerController : MonoBehaviour
         if (input.magnitude > 1f) input = input.normalized;
 
         moveVelocity = input * speed;
+
+        if (animator != null)
+        {
+            animator.SetFloat(SpeedHash, input.sqrMagnitude);
+
+            if (input != Vector2.zero)
+            {
+                animator.SetFloat(DirectionXHash, input.x);
+                animator.SetFloat(DirectionYHash, input.y);
+            }
+        }
+
+        if (_footsteps != null)
+        {
+            _footsteps.SetMoving(input != Vector2.zero);
+        }
 
         // Обработка взаимодействия (нажатие E)
         if (Input.GetKeyDown(KeyCode.E))
