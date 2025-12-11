@@ -596,7 +596,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   volumeSlider: {fileID: 768126410}
   audioSource: {fileID: 1771860077}
-  audioClip: {fileID: 8300000, guid: 1e39a54614680f54aa0e1c939a7bc230, type: 3}
+  audioClip: {fileID: 8300000, guid: 4a953d1f387ba004c8e9ded4219387a5, type: 3}
 --- !u!1 &309526180
 GameObject:
   m_ObjectHideFlags: 0

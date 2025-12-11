@@ -1,9 +1,11 @@
-using UnityEngine;
-using UnityEngine.Video;
-using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
+using UnityEngine.Video;
 
+using Button = UnityEngine.UI.Button;
 public class VideoController : MonoBehaviour
 {
     [Header("Настройки видео")]
@@ -16,17 +18,18 @@ public class VideoController : MonoBehaviour
     [SerializeField] private Text subtitleText; // UI Text для отображения субтитров
     [SerializeField] private GameObject subtitlePanel; // Панель субтитров (опционально)
 
+    [Header("Кнопка в конце")]
+    [SerializeField] private Button endButton; // Кнопка, которая появится после видео
+    [SerializeField] private float buttonAppearDelay = 1f; // Задержка перед появлением кнопки
+
     [Header("Временные настройки")]
     [SerializeField] private float delayBetweenVideos = 0; // Задержка между видео
     [SerializeField] private float subtitleFadeTime = 0.25f; // Время появления/исчезновения субтитров
 
-    [Header("Автопереход")]
-    [SerializeField] private bool autoSkipToNextScene = true; // Автоматически переходить к следующей сцене
-    [SerializeField] private string nextSceneName; // Имя следующей сцены
-
     private int currentVideoIndex = 0;
     private bool isPlaying = false;
     private CanvasGroup subtitleCanvasGroup;
+    private CanvasGroup buttonCanvasGroup;
 
     void Start()
     {
@@ -61,9 +64,40 @@ public class VideoController : MonoBehaviour
         // Скрываем субтитры в начале
         if (subtitleCanvasGroup != null)
             subtitleCanvasGroup.alpha = 0;
+
+        SetupEndButton();
+    }
+void SetupEndButton()
+{
+    // Скрываем кнопку в начале
+    if (endButton != null)
+    {
+        endButton.gameObject.SetActive(false);
+
+        // Добавляем CanvasGroup для плавного появления
+        buttonCanvasGroup = endButton.GetComponent<CanvasGroup>();
+        if (buttonCanvasGroup == null)
+            buttonCanvasGroup = endButton.gameObject.AddComponent<CanvasGroup>();
+        buttonCanvasGroup.alpha = 0;
+    }
+    else if (endButton != null)
+    {
+        endButton.gameObject.SetActive(false);
+
+        buttonCanvasGroup = endButton.GetComponent<CanvasGroup>();
+        if (buttonCanvasGroup == null)
+            buttonCanvasGroup = endButton.gameObject.AddComponent<CanvasGroup>();
+        buttonCanvasGroup.alpha = 0;
     }
 
-    IEnumerator PlayVideoSequence()
+    // Назначаем действие на кнопку
+    if (endButton != null)
+    {
+        endButton.onClick.RemoveAllListeners(); // Очищаем старые события
+        endButton.onClick.AddListener(OnEndButtonClicked);
+    }
+}
+IEnumerator PlayVideoSequence()
     {
         isPlaying = true;
 
@@ -127,17 +161,60 @@ public class VideoController : MonoBehaviour
         isPlaying = false;
         Debug.Log("Интро завершено!");
 
-        // Автоматический переход к следующей сцене
-        if (autoSkipToNextScene && !string.IsNullOrEmpty(nextSceneName))
+        StartCoroutine(ShowEndButtonWithDelay());
+    }
+
+    IEnumerator ShowEndButtonWithDelay()
+    {
+        // Ждем указанное время
+        yield return new WaitForSeconds(buttonAppearDelay);
+
+        // Активируем объект кнопки
+        if (endButton != null)
         {
-            StartCoroutine(LoadNextSceneWithDelay(1f));
+            endButton.gameObject.SetActive(true);
+            yield return StartCoroutine(FadeButton(true));
         }
     }
 
-    IEnumerator LoadNextSceneWithDelay(float delay)
+    IEnumerator FadeButton(bool fadeIn)
     {
-        yield return new WaitForSeconds(delay);
-        UnityEngine.SceneManagement.SceneManager.LoadScene(nextSceneName);
+        if (buttonCanvasGroup == null) yield break;
+
+        float targetAlpha = fadeIn ? 1f : 0f;
+        float startAlpha = buttonCanvasGroup.alpha;
+        float timer = 0f;
+        float fadeDuration = 0.5f; // Время появления кнопки
+
+        while (timer < fadeDuration)
+        {
+            timer += Time.deltaTime;
+            buttonCanvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, timer / fadeDuration);
+            yield return null;
+        }
+
+        buttonCanvasGroup.alpha = targetAlpha;
+
+        // Если скрываем кнопку, деактивируем объект
+        if (!fadeIn)
+        {
+            if (endButton != null) endButton.gameObject.SetActive(false);
+        }
+    }
+
+    // Метод, который вызывается при нажатии на кнопку
+    void OnEndButtonClicked()
+    {
+        Debug.Log("Кнопка 'Продолжить' нажата!");
+
+        // Плавно скрываем кнопку
+        StartCoroutine(HideButton());
+    }
+
+    IEnumerator HideButton()
+    {
+        // Плавно скрываем кнопку
+        yield return StartCoroutine(FadeButton(false));
     }
 
     // Метод для пропуска интро (можно привязать к кнопке)
